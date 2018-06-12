@@ -5,6 +5,13 @@
 #include "lcd.h"
 #include "hd44780.h"
 
+static const uint8_t custom_chars[24] = 
+{
+    0x00,0x00,0x08,0x15,0x15,0x02,0x00,0x00, //sinus
+    0x00,0x00,0x07,0x05,0x05,0x1D,0x00,0x00, //square
+    0x00,0x00,0x00,0x04,0x0A,0x11,0x00,0x00  //triangle
+};
+
 static inline void ctrl_hi(uint8_t pins)
 {
     LCD_CTRL_PORT |= pins;
@@ -20,6 +27,16 @@ static void write_nibble(uint8_t nibble)
     ctrl_hi(LCD_EN);
     LCD_DATA_PORT = (LCD_DATA_PORT & ~(LCD_DATA_PINS)) | ((nibble << (LCD_DATA_LSB - 1)) & LCD_DATA_PINS);
     ctrl_lo(LCD_EN);
+}
+
+static void write_custom_chars(const uint8_t* tab)
+{
+    uint8_t i = 24;
+    
+    lcd_write_cmd(HD44780_CGRAM_SET);
+    while(i--) lcd_write_char(*tab++);
+    //set internal pointer back to address of first visible character
+    lcd_go_home();
 }
 
 void lcd_write_cmd(uint8_t cmd)
@@ -38,7 +55,7 @@ void lcd_write_char(char ch)
     _delay_us(40);
 }
 
-void lcd_write_string(const char *str)
+void lcd_write_string(const char* str)
 {
     while(*str) lcd_write_char(*str++);
 }
@@ -53,14 +70,6 @@ void lcd_set_pos(uint8_t col,
                  uint8_t row)
 {
     lcd_write_cmd(HD44780_DDRAM_SET | (col + (0x40 * row)));
-}
-
-void lcd_set_character(uint8_t number,
-                       uint8_t *tab)
-{
-    number &= 0x07;
-    lcd_write_cmd(HD44780_CGRAM_SET | number);
-    for(uint8_t i=0;i<8;i++) lcd_write_char(*tab++);
 }
 
 void lcd_go_home(void)
@@ -108,4 +117,6 @@ void lcd_init(void)
     //cursor position and DDRAM adress increments automatically
     lcd_write_cmd(HD44780_EM_SHIFT_CUR | HD44780_EM_INC);
     lcd_cursor_hide();
+    //write characters to CGRAM
+    write_custom_chars(custom_chars);
 }

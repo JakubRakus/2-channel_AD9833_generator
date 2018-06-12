@@ -16,12 +16,10 @@
 
 void lcd_write_cmd(uint8_t cmd);
 void lcd_write_char(char ch);
-void lcd_write_string(const char *str);
+void lcd_write_string(const char* str);
 void lcd_clear(void);
 void lcd_set_pos(uint8_t col,
                  uint8_t row);
-void lcd_set_character(uint8_t number,
-                       uint8_t *tab);
 void lcd_go_home(void);
 void lcd_cursor_blink(void);
 void lcd_cursor_static(void);

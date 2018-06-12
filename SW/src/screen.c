@@ -10,7 +10,7 @@
 #include "fsm.h"
 #include "screen.h"
 
-static const char wave_sign[3] = {'S','T','R'};
+static const char wave_sign[3] = {0,2,1};
 static const uint32_t multiplier[7] = {1000000,100000,10000,1000,100,10,1};
 static const editable_field_t edit_flds[ACT_FLDS_NUMB] =
     {{3,0},{4,0},{5,0},{6,0},{7,0},{8,0},{9,0}, //channel 1 frequency

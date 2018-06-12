@@ -18,8 +18,10 @@ static inline void start_app(void)
     lcd_write_string("   generator    ");
     _delay_ms(2000);
 
-    ad9833_set_freq(10000,0);
-    ad9833_set_freq(10000,1);
+    ad9833_set_freq(1000,0);
+    ad9833_set_freq(1000,1);
+    ad9833_set_phase(0,0);
+    ad9833_set_phase(0,1);
     ad9833_reset(false);
 }
 
