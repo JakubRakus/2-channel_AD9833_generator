@@ -17,7 +17,7 @@ void uart_send_char(char ch)
     UDR0 = ch;
 }
 
-void uart_send_string(const char *str)
+void uart_send_string(const char* str)
 {
     while(*str) uart_send_char(*str++);
 }

@@ -10,19 +10,19 @@
 #include "fsm.h"
 #include "screen.h"
 
-static const char wave_sign[3] = 
+static const char wave_sign[3][4] = 
 {
-    LCD_CH_SINUS,
-    LCD_CH_TRIANGLE,
-    LCD_CH_SQUARE
+    "SIN",
+    "TRG",
+    "SQR"
 };
 static const uint32_t multiplier[7] = {1000000,100000,10000,1000,100,10,1};
 static const editable_field_t edit_flds[ACT_FLDS_NUMB] =
 {
-    {3,0},{4,0},{5,0},{6,0},{7,0},{8,0},{9,0}, //channel 1 frequency
-    {13,0},{15,0}, //channel 1 wave shape, channel 1 more options
-    {3,1},{4,1},{5,1},{6,1},{7,1},{8,1},{9,1}, //channel 2 frequency
-    {13,1},{15,1} //channel 2 wave shape, channel 2 more options
+    {1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0}, //channel 1 frequency
+    {11,0},{15,0}, //channel 1 wave shape, channel 1 more options
+    {1,1},{2,1},{3,1},{4,1},{5,1},{6,1},{7,1}, //channel 2 frequency
+    {11,1},{15,1} //channel 2 wave shape, channel 2 more options
 };
 
 static uint8_t active_field;
@@ -46,10 +46,9 @@ static void basic_info_show(uint8_t ch)
 {
     uint32_to_str(ad9833_get_freq(ch),freq_str[ch],7);
     lcd_write_char(LCD_CH_CH1+ch);
-    lcd_write_string("  ");
     lcd_write_string(freq_str[ch]);
     lcd_write_string("Hz ");
-    lcd_write_char(wave_sign[(uint8_t)ad9833_get_wave(ch)]);
+    lcd_write_string(wave_sign[(uint8_t)ad9833_get_wave(ch)]);
     lcd_write_char(' ');
     lcd_write_char(LCD_CH_RARROW);
 }
@@ -85,7 +84,7 @@ static void field_edit(int8_t steps)
             uint8_t shape = (uint8_t)ad9833_get_wave(ch);
             shape = (shape + steps + ((INT8_MAX / 3) + 1) * 3) % 3;
             ad9833_set_wave((waveShape_t)shape,ch);
-            lcd_write_char(wave_sign[shape]);
+            lcd_write_string(wave_sign[shape]);
         }
         else if((active_field == 8) || (active_field == 17)) //set more options
         {}

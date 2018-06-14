@@ -12,7 +12,7 @@ void spi_init(void)
     SPCR = _BV(SPE)|_BV(CPOL)|_BV(MSTR); //enable SPI in master mode, CPOL=1, CPHA=0
 }
 
-void spi_send_word(uint16_t *data)
+void spi_send_word(uint16_t* data)
 {
     SPDR = (uint8_t)(*data >> 8);
     while(!(SPSR & _BV(SPIF)));
