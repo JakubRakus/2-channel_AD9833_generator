@@ -6,7 +6,8 @@
 #include "fsm.h"
 #include "ad9833.h"
 #include "lcd.h"
-#include "screen.h"
+#include "main_screen.h"
+#include "menu.h"
 
 static inline void start_app(void)
 {
@@ -39,12 +40,16 @@ void fsm_run(fsm_state_t first_state)
             last_state = START;
             break;
         case(MAIN_SCREEN):
-            state = screen_loop(last_state);
+            state = main_screen_loop(last_state);
             last_state = MAIN_SCREEN;
             break;
-        case(MENU):
-            state = MAIN_SCREEN;
-            last_state = MENU;
+        case(MENU_CH1):
+            state = menu_loop(last_state);
+            last_state = MENU_CH1;
+            break;
+        case(MENU_CH2):
+            state = menu_loop(last_state);
+            last_state = MENU_CH2;
             break;
         default:
             state = START;

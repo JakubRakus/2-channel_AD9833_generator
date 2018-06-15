@@ -12,7 +12,6 @@ ISR(INT0_vect)
 {
     if(ENCODER_PIN & ENCODER_A) rotation--;
     else rotation++;
-    //uart_send_char(rotation);
 }
 
 void encoder_init(void)

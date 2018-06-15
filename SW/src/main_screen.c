@@ -3,19 +3,15 @@
 #include <util/delay.h>
 #include <stdbool.h>
 
-#include "uart.h"
 #include "encoder.h"
 #include "ad9833.h"
 #include "lcd.h"
 #include "fsm.h"
-#include "screen.h"
+#include "main_screen.h"
 
-static const char wave_sign[3][4] = 
-{
-    "SIN",
-    "TRG",
-    "SQR"
-};
+#define ACT_FLDS_NUMB   18
+
+static const char wave[3][4] = {"SIN","TRG","SQR"};
 static const uint32_t multiplier[7] = {1000000,100000,10000,1000,100,10,1};
 static const editable_field_t edit_flds[ACT_FLDS_NUMB] =
 {
@@ -48,18 +44,21 @@ static void basic_info_show(uint8_t ch)
     lcd_write_char(LCD_CH_CH1+ch);
     lcd_write_string(freq_str[ch]);
     lcd_write_string("Hz ");
-    lcd_write_string(wave_sign[(uint8_t)ad9833_get_wave(ch)]);
+    lcd_write_string(wave[(uint8_t)ad9833_get_wave(ch)]);
     lcd_write_char(' ');
     lcd_write_char(LCD_CH_RARROW);
 }
 
-static void field_move(int8_t steps)
+static _Bool field_move(int8_t steps)
 {
     if(steps != 0)
     {
         active_field = (active_field + steps + ((INT8_MAX / ACT_FLDS_NUMB) + 1) * ACT_FLDS_NUMB) % ACT_FLDS_NUMB;
         lcd_set_pos(edit_flds[active_field].col,edit_flds[active_field].row);
     }
+    //cursor at 'more options' field
+    if((active_field == 8) || (active_field == 17)) return true;
+    return false;
 }
 
 static void field_edit(int8_t steps)
@@ -84,18 +83,18 @@ static void field_edit(int8_t steps)
             uint8_t shape = (uint8_t)ad9833_get_wave(ch);
             shape = (shape + steps + ((INT8_MAX / 3) + 1) * 3) % 3;
             ad9833_set_wave((waveShape_t)shape,ch);
-            lcd_write_string(wave_sign[shape]);
+            lcd_write_string(wave[shape]);
         }
-        else if((active_field == 8) || (active_field == 17)) //set more options
-        {}
         lcd_set_pos(edit_flds[active_field].col,edit_flds[active_field].row);
     }
 }
 
-fsm_state_t screen_loop(fsm_state_t last_state)
+fsm_state_t main_screen_loop(fsm_state_t last_state)
 {
-    _Bool sw_state;
+    _Bool sw_pos;
     _Bool edit_mode = false;
+    _Bool change_screen = false;
+    fsm_state_t next_state = MAIN_SCREEN;
     
     lcd_clear();
     basic_info_show(0);
@@ -104,15 +103,17 @@ fsm_state_t screen_loop(fsm_state_t last_state)
     active_field = 0;
     lcd_set_pos(edit_flds[active_field].col,edit_flds[active_field].row);
     lcd_cursor_static();
+    encoder_zero();
     while(1)
     {
         if(edit_mode == true)
         {
             field_edit(encoder_get_rotation());
-            sw_state = encoder_get_switch();
+            sw_pos = encoder_get_switch();
             _delay_ms(10);
-            if(sw_state == false && encoder_get_switch() == true)
+            if(sw_pos == false && encoder_get_switch() == true)
             {
+                //change mode to cursor moving
                 edit_mode = false;
                 lcd_cursor_static();
                 encoder_zero();
@@ -120,16 +121,24 @@ fsm_state_t screen_loop(fsm_state_t last_state)
         }
         else
         {
-            field_move(encoder_get_rotation());
-            sw_state = encoder_get_switch();
+            change_screen = field_move(encoder_get_rotation());
+            sw_pos = encoder_get_switch();
             _delay_ms(10);
-            if(sw_state == false && encoder_get_switch() == true)
+            if(sw_pos == false && encoder_get_switch() == true)
             {
+                //leave main screen and go to channel menu screen
+                if(change_screen)
+                {
+                    //treat row as a channel, like in 'field_edit()'
+                    next_state = MENU_CH1 + edit_flds[active_field].row;
+                    break;
+                }
+                //or change mode to field edition
                 edit_mode = true;
                 lcd_cursor_blink();
                 encoder_zero();
             }
         }
     }
-    return last_state;
+    return next_state;
 }
