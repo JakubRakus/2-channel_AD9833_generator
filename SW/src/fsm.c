@@ -26,34 +26,30 @@ static inline void start_app(void)
     ad9833_reset(false);
 }
 
-void fsm_run(fsm_state_t first_state)
+void fsm_run(void)
 {
-    fsm_state_t state = first_state;
-    fsm_state_t last_state = DEFAULT;
+    fsm_state_set_t state = {START,START,START};
+    
     while(1)
     {
-        switch(state)
+        switch(state.current)
         {
         case(START):
             start_app();
-            state = MAIN_SCREEN;
-            last_state = START;
+            state.next = MAIN_SCREEN;
             break;
         case(MAIN_SCREEN):
-            state = main_screen_loop(last_state);
-            last_state = MAIN_SCREEN;
+            state.next = main_screen_loop(state.last);
             break;
         case(MENU_CH1):
-            state = menu_loop(last_state);
-            last_state = MENU_CH1;
-            break;
         case(MENU_CH2):
-            state = menu_loop(last_state);
-            last_state = MENU_CH2;
+            state.next = menu_loop(state.last);
             break;
         default:
-            state = START;
-            last_state = DEFAULT;
+            state.next = START;
+            state.current = DEFAULT;
         }
+        state.last = state.current;
+        state.current = state.next;
     }
 }

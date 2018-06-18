@@ -15,8 +15,8 @@ int main(void)
     spi_init();
     encoder_init();
     
-    //start finite state machine
-    fsm_run(START);
+    //run finite state machine
+    fsm_run();
     
     //we should never reach here
     while(1);

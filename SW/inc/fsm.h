@@ -10,6 +10,13 @@ typedef enum
     MENU_CH2 = 4
 } fsm_state_t;
 
-void fsm_run(fsm_state_t first_state);
+typedef struct
+{
+    fsm_state_t last;
+    fsm_state_t current;
+    fsm_state_t next;
+} fsm_state_set_t;
+
+void fsm_run(void);
 
 #endif // FSM_H_INCLUDED
