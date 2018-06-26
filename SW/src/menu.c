@@ -32,7 +32,7 @@ static void additional_info_show(void)
     lcd_write_char(LCD_CH_PHI);
     lcd_write_char(':');
     lcd_write_string(phase_str);
-    lcd_write_char(0xDF);
+    lcd_write_char(LCD_CH_DEGREE);
     lcd_set_pos(15,1);
     lcd_write_char(LCD_CH_RARROW);
 }
@@ -44,8 +44,8 @@ static _Bool field_move(int8_t steps)
         active_field = (active_field + steps + ((INT8_MAX / ACT_FLDS_NUMB) + 1) * ACT_FLDS_NUMB) % ACT_FLDS_NUMB;
         lcd_set_pos(edit_flds[active_field].col,edit_flds[active_field].row);
     }
-    //cursor at 'more options' field
-    if((active_field == 3)) return true;
+    //cursor at 'change screen' field
+    if(active_field == 3) return true;
     return false;
 }
 

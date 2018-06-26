@@ -66,7 +66,7 @@ void ad9833_set_phase(uint16_t phase,
 {
     uint16_t phase_word;
     
-    phase_word = PR_PHASE0 | (((phase * 512) / 45) & 0x0FFF);
+    phase_word = PR_PHASE0 | ((((uint32_t)phase * 512UL) / 45) & 0x0FFF);
     fsync_lo(generator[ch].pin);
     spi_send_word(&phase_word);
     fsync_hi(generator[ch].pin);

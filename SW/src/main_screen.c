@@ -44,7 +44,7 @@ static _Bool field_move(int8_t steps)
         active_field = (active_field + steps + ((INT8_MAX / ACT_FLDS_NUMB) + 1) * ACT_FLDS_NUMB) % ACT_FLDS_NUMB;
         lcd_set_pos(edit_flds[active_field].col,edit_flds[active_field].row);
     }
-    //cursor at 'more options' field
+    //cursor at 'change screen' field
     if((active_field == 8) || (active_field == 17)) return true;
     return false;
 }
