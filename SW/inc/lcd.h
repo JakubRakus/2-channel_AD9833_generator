@@ -13,9 +13,7 @@
 
 #define LCD_CH_RARROW   0x7E
 #define LCD_CH_LARROW   0x7F
-#define LCD_CH_SINUS    0x00
-#define LCD_CH_SQUARE   0x01
-#define LCD_CH_TRIANGLE 0x02
+#define LCD_CH_PHI      0x00
 #define LCD_CH_CH1      0x03
 #define LCD_CH_CH2      0x04
 

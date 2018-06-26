@@ -7,6 +7,8 @@
 #include "ad9833.h"
 #include "lcd.h"
 #include "fsm.h"
+#include "utils.h"
+#include "screen_common.h"
 #include "main_screen.h"
 
 #define ACT_FLDS_NUMB   18
@@ -23,20 +25,6 @@ static const editable_field_t edit_flds[ACT_FLDS_NUMB] =
 
 static uint8_t active_field;
 static char freq_str[2][8];
-
-static void uint32_to_str(uint32_t numb,
-                          char *str,
-                          uint8_t len)
-{
-    str[len] = 0;
-    while(len--)
-    {
-        str[len] = (numb % 10) + 48;
-        numb /= 10;
-        if(numb == 0) break;
-    }
-    while(len--) str[len] = ' ';
-}
 
 static void basic_info_show(uint8_t ch)
 {

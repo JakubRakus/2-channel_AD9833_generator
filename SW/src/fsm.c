@@ -43,7 +43,7 @@ void fsm_run(void)
             break;
         case(MENU_CH1):
         case(MENU_CH2):
-            state.next = menu_loop(state.last);
+            state.next = menu_loop(state.current,state.last);
             break;
         default:
             state.next = START;
