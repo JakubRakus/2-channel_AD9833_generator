@@ -1,5 +1,6 @@
 
 #include <avr/io.h>
+#include <avr/wdt.h>
 
 #include "fsm.h"
 #include "clock.h"
@@ -9,7 +10,8 @@
 
 int main(void)
 {
-    //init base periherals
+    //init base peripherals
+    wdt_disable();
     clock_init();
     uart_init();
     spi_init();
@@ -19,5 +21,6 @@ int main(void)
     fsm_run();
     
     //we should never reach here
+    wdt_enable(WDTO_15MS);
     while(1);
 }

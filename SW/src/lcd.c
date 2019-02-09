@@ -31,7 +31,7 @@ static void write_nibble(uint8_t nibble)
 {
     ctrl_hi(LCD_EN);
     LCD_DATA_PORT = (LCD_DATA_PORT & ~(LCD_DATA_PINS))
-                    | ((nibble << (LCD_DATA_LSB - 1)) & LCD_DATA_PINS);
+                    | ((nibble << LCD_DATA_LSB) & LCD_DATA_PINS);
     ctrl_lo(LCD_EN);
 }
 

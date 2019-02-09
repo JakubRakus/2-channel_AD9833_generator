@@ -16,17 +16,17 @@
 static const uint32_t multiplier[3] = {100,10,1};
 static const editable_field_t edit_flds[ACT_FLDS_NUMB] =
 {
-    {4,0},{5,0},{6,0}, //phase
+    {5,0},{6,0},{7,0}, //phase
     {15,1} //more options
 };
 
 static uint8_t channel;
 static uint8_t active_field;
-static char phase_str[4];
+static char phase_str[5];
 
 static void additional_info_show(void)
 {
-    uint32_to_str(ad9833_get_phase(channel),phase_str,3);
+    int16_to_str(ad9833_get_phase(channel),phase_str,4,true,true);
     lcd_write_char(LCD_CH_CH1+channel);
     lcd_write_char(' ');
     lcd_write_char(LCD_CH_PHI);
@@ -56,11 +56,11 @@ static void field_edit(int8_t steps)
         if(active_field < 3) //change phase
         {
             int16_t p = ad9833_get_phase(channel) + steps * multiplier[active_field];
-            if(p > 360) p = 360;
-            if(p < 0) p = 0;
-            ad9833_set_phase((uint16_t)p,channel);
-            uint32_to_str((uint32_t)p,phase_str,3);
-            lcd_set_pos(edit_flds[0].col,edit_flds[0].row);
+            if(p > 180) p = 180;
+            if(p < -180) p = -180;
+            ad9833_set_phase(p,channel);
+            int16_to_str(p,phase_str,4,true,true);
+            lcd_set_pos(edit_flds[0].col-1,edit_flds[0].row);
             lcd_write_string(phase_str);
         }
         lcd_set_pos(edit_flds[active_field].col,edit_flds[active_field].row);

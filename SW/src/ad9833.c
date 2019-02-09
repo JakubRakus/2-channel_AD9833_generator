@@ -6,7 +6,11 @@
 #include "ad9833.h"
 #include "spi.h"
 
-static ad9833generator_t generator[2] = {{AD9833_FS0,0,0,0},{AD9833_FS1,0,0,0}};
+static ad9833generator_t generator[2] =
+{
+    {AD9833_FS0,0,-180,0},
+    {AD9833_FS1,0,-180,0}
+};
 
 static inline void fsync_hi(uint8_t pins)
 {
@@ -61,12 +65,12 @@ uint32_t ad9833_get_freq(uint8_t ch)
     return generator[ch].frequency;
 }
 
-void ad9833_set_phase(uint16_t phase,
+void ad9833_set_phase(int16_t phase,
                       uint8_t ch)
 {
     uint16_t phase_word;
     
-    phase_word = PR_PHASE0 | ((((uint32_t)phase * 512UL) / 45) & 0x0FFF);
+    phase_word = PR_PHASE0 | ((((phase + 180) * 512UL) / 45) & 0x0FFF);
     fsync_lo(generator[ch].pin);
     spi_send_word(&phase_word);
     fsync_hi(generator[ch].pin);

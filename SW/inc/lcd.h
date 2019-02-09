@@ -8,8 +8,8 @@
 
 #define LCD_DATA_DDR    DDRC
 #define LCD_DATA_PORT   PORTC
-#define LCD_DATA_LSB    _BV(0)
-#define LCD_DATA_PINS   (LCD_DATA_LSB|(LCD_DATA_LSB<<1)|(LCD_DATA_LSB<<2)|(LCD_DATA_LSB<<3))
+#define LCD_DATA_LSB    0
+#define LCD_DATA_PINS   (_BV(LCD_DATA_LSB)|(_BV(LCD_DATA_LSB)<<1)|(_BV(LCD_DATA_LSB)<<2)|(_BV(LCD_DATA_LSB)<<3))
 
 #define LCD_CH_RARROW   0x7E
 #define LCD_CH_LARROW   0x7F

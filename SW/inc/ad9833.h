@@ -27,7 +27,7 @@ typedef enum {SIN = 0, TRG = 1, SQR = 2} waveShape_t;
 typedef struct ad9833generator_t {
     uint8_t pin;
     uint32_t frequency;
-    uint16_t phase;
+    int16_t phase;
     uint16_t control;
 } ad9833generator_t;
 
@@ -36,7 +36,7 @@ void ad9833_reset(_Bool rst);
 void ad9833_set_freq(uint32_t freq,
                      uint8_t ch);
 uint32_t ad9833_get_freq(uint8_t ch);
-void ad9833_set_phase(uint16_t phase,
+void ad9833_set_phase(int16_t phase,
                       uint8_t ch);
 uint16_t ad9833_get_phase(uint8_t ch);
 void ad9833_set_wave(waveShape_t shape,
